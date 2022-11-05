@@ -77,6 +77,16 @@ class Database:
         );"""
         self.execute(sql, commit=True)
 
+    def create_cart_table(self):
+        sql = """
+        CREATE TABLE Cart (
+            id INTEGER PRIMARY KEY,
+            tg_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            amount INTEGER NOT NULL
+        );"""
+        self.execute(sql, commit=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join([
@@ -89,6 +99,23 @@ class Database:
         INSERT INTO Users(tg_id, full_name, username) VALUES(?, ?, ?)
         """
         self.execute(sql, parameters=(tg_id, full_name, username), commit=True)
+
+    def add_product(self, tg_id: int, product_id: int, amount: int):
+        sql1 = """SELECT * FROM Cart WHERE product_id=?"""
+        res = self.execute(sql1, parameters=(product_id, ), fetchone=True)
+        if res:
+            amount += res[-1]
+            tg_id = res[1]
+            product_id = res[-2]
+            sql = f"""
+            UPDATE Cart SET amount=? WHERE tg_id=? AND product_id=?
+            """
+            return self.execute(sql, parameters=(amount, tg_id, product_id), commit=True)
+        else:
+            sql = """
+            INSERT INTO Cart(tg_id, product_id, amount) VALUES(?, ?, ?)
+            """
+            self.execute(sql, parameters=(tg_id, product_id, amount), commit=True)
 
     def select_all_users(self):
         sql = """

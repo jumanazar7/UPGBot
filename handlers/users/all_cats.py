@@ -4,27 +4,27 @@ from aiogram import types
 from keyboards.inline.menu import back, home
 from states.main import ShopState
 from aiogram.dispatcher import FSMContext
+from keyboards.inline.menu import get_all_cats
 
 
 @dp.callback_query_handler(text="cats")
 async def all_categories(call: types.CallbackQuery):
     cats_info = db.select_all_cats()
-    markup = InlineKeyboardMarkup(row_width=2)
-    for cat in cats_info:
-        markup.insert(InlineKeyboardButton(text=cat[1], callback_data=cat[2]))
-    markup.add(back, home)
-    await call.message.edit_text("Barcha kategoriyalar ro'yhati", reply_markup=markup)
+    await call.message.edit_text("Barcha kategoriyalar ro'yhati", reply_markup=get_all_cats(cats_info))
     await ShopState.category.set()
 
 
 @dp.callback_query_handler(state=ShopState.category)
 async def get_sub_categories(call: types.CallbackQuery, state: FSMContext):
-    
     slug = call.data
     cat_info = db.get_category_info(slug=slug)
     cat_id = cat_info[0]
     cat_title = cat_info[1]
     cat_image = cat_info[3]
+    await state.update_data({
+        "cat_id": cat_id,
+        "cat_slug": slug
+    })
     sub_cats = db.select_all_sub_cats_by_cat_id(category_id=cat_id)
     markup = InlineKeyboardMarkup(row_width=2)
     for sub_cat in sub_cats:

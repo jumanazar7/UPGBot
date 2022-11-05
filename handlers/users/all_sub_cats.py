@@ -12,7 +12,8 @@ async def get_all_data(call: types.CallbackQuery, state: FSMContext):
     sub_cat_title = sub_cat_info[1]
     sub_cat_image = sub_cat_info[3]
     await state.update_data({
-        'sub_cat_id': sub_cat_id
+        'sub_cat_id': sub_cat_id,
+        'sub_cat_slug': call.data
     })
     products = db.select_all_products_by_sub_cat_id(subcategory_id=sub_cat_id)
     markup = InlineKeyboardMarkup(row_width=2)
