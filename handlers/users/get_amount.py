@@ -14,7 +14,7 @@ async def get_product_amount(call: types.CallbackQuery, state: FSMContext):
 
     if call_data.isdigit():
         amount = int(call_data)
-        db.add_product(tg_id=call.message.from_user.id, product_id=product_id, amount=amount)
+        db.add_product(tg_id=call.from_user.id, product_id=product_id, amount=amount)
     elif call_data == "like":
         pass
     

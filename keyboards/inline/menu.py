@@ -10,6 +10,8 @@ main_menu = InlineKeyboardMarkup(
 
 back = InlineKeyboardButton(text="Orqaga", callback_data="back")
 home = InlineKeyboardButton(text="Bosh sahifa", callback_data="home")
+clear_cart = InlineKeyboardButton(text="🗑 Tozalash", callback_data="clear")
+order = InlineKeyboardButton(text="💳 Buyurtma berish", callback_data="order")
 
 
 
@@ -28,4 +30,12 @@ def get_all_cats(cats_info):
     for cat in cats_info:
         markup.insert(InlineKeyboardButton(text=cat[1], callback_data=cat[2]))
     markup.add(back, home)
+    return markup
+
+def get_cart_items(items):
+    markup = InlineKeyboardMarkup(row_width=1)
+    for item in items:
+        markup.insert(InlineKeyboardButton(text=f"❌ {item[1]} ❌", callback_data=f"{item[0]}"))
+    markup.row(clear_cart, order)
+    markup.row(back, home)
     return markup

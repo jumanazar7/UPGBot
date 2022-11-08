@@ -6,3 +6,4 @@ class ShopState(StatesGroup):
     sub_category = State()
     product = State()
     amount = State()
+    cart = State()

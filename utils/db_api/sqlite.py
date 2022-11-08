@@ -101,8 +101,9 @@ class Database:
         self.execute(sql, parameters=(tg_id, full_name, username), commit=True)
 
     def add_product(self, tg_id: int, product_id: int, amount: int):
-        sql1 = """SELECT * FROM Cart WHERE product_id=?"""
-        res = self.execute(sql1, parameters=(product_id, ), fetchone=True)
+        sql1 = """SELECT * FROM Cart WHERE product_id=? AND tg_id=?"""
+        res = self.execute(sql1, parameters=(product_id, tg_id), fetchone=True)
+        print("*" * 20, res, "*" * 20)
         if res:
             amount += res[-1]
             tg_id = res[1]
@@ -132,6 +133,20 @@ class Database:
     def get_category_info(self, **kwargs):
         sql = """
         SELECT id,title,slug,image_url FROM Category WHERE 
+        """
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchone=True)
+
+    def get_cart_items(self, **kwargs):
+        sql = """
+        SELECT * FROM Cart WHERE 
+        """
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchall=True)
+
+    def get_product_info(self, **kwargs):
+        sql = """
+        SELECT * FROM Product WHERE 
         """
         sql, parameters = self.format_args(sql, kwargs)
         return self.execute(sql, parameters=parameters, fetchone=True)
@@ -180,6 +195,12 @@ class Database:
 
     def delete_users(self):
         self.execute("DELETE FROM Users WHERE TRUE", commit=True)
+    
+    def delete_product_cart(self, **kwargs):
+        sql = "DELETE FROM Cart WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+
+        return self.execute(sql, parameters=parameters, commit=True)
 
 
 def logger(statement):
