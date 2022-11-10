@@ -168,6 +168,10 @@ class Database:
         sql, parameters = self.format_args(sql, kwargs)
         return self.execute(sql, parameters=parameters, fetchall=True)
 
+    def search_products(self, query):
+        sql = f"SELECT * FROM Product WHERE title LIKE '%{query}%' OR desc LIKE '%{query}%'"
+        return self.execute(sql, fetchall=True)
+
     def get_product_info(self, **kwargs):
         sql = """
         SELECT * FROM Product WHERE 

@@ -7,3 +7,4 @@ class ShopState(StatesGroup):
     product = State()
     amount = State()
     cart = State()
+    search = State()
