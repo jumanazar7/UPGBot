@@ -17,6 +17,11 @@ async def back_to_home(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(f"Bizning online do'konimizdan kerakli bo'lgan mahsulotlarni topishingiz mumkin.", reply_markup=main_menu)
     await state.finish()
 
+@dp.callback_query_handler(state=ShopState.cart)
+async def back_to_home1(call: types.CallbackQuery, state: FSMContext):
+    await call.message.edit_text(f"Bizning online do'konimizdan kerakli bo'lgan mahsulotlarni topishingiz mumkin.", reply_markup=main_menu)
+    await state.finish()
+
 @dp.callback_query_handler(text="back", state=ShopState.sub_category)
 async def back_to_cats(call: types.CallbackQuery, state: FSMContext):
     cats_info = db.select_all_cats()
